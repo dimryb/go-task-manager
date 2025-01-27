@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func NewRouter(taskHandler *handler.TaskHandler) *mux.Router {
+func NewRouter(taskHandler handler.TaskHandler) *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/tasks", taskHandler.CreateTask).Methods(http.MethodPost)
 	return r

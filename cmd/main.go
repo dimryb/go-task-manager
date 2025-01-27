@@ -1,23 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"go-task-manager/internal/app"
+	"go-task-manager/internal/infrastructure/config"
+	"log"
 )
 
 func main() {
-	app := app.NewApp()
-	if err := app.Config.Load(".env"); err != nil {
+	cfg := config.Config{}
+	if err := cfg.Load(".env"); err != nil {
 		panic(err)
 	}
 
-	if err := app.Setup(); err != nil {
-		panic(err)
-	}
+	application := app.NewApp(&cfg)
+	application.Initialize()
 
-	fmt.Println("Starting is running.")
-
-	if err := app.Run(); err != nil {
-		panic(err)
+	log.Println("Application is starting...")
+	if err := application.Run(); err != nil {
+		log.Fatalf("Application failed to start: %v", err)
 	}
 }

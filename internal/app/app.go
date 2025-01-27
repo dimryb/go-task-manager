@@ -2,27 +2,48 @@ package app
 
 import (
 	"github.com/gorilla/mux"
-	"go-task-manager/internal/infrastructure/config"
+	"go-task-manager/internal/interfaces/database"
+	"go-task-manager/internal/interfaces/repository"
+	"go-task-manager/internal/usecase"
 	"gorm.io/gorm"
+	"log"
 	"net/http"
+
+	"go-task-manager/internal/infrastructure/config"
+	"go-task-manager/internal/infrastructure/router"
+	"go-task-manager/internal/interfaces/http/handler"
 )
 
 type App struct {
-	Config config.Config
+	Config *config.Config
 	Router *mux.Router
 	DB     *gorm.DB
 }
 
-func NewApp() App {
-	return App{}
+func NewApp(cfg *config.Config) *App {
+	return &App{
+		Config: cfg,
+	}
 }
 
-func (app *App) Setup() error {
-	router := mux.NewRouter()
+func (app *App) Initialize() {
+	app.setupDatabase()
+	app.setupRouter()
+}
 
-	app.Router = router
+func (app *App) setupDatabase() {
+	db, err := database.Connect(app.Config.DatabaseUrl)
+	if err != nil {
+		log.Fatalf("Failed to connect to the database: %v", err)
+	}
+	app.DB = db
+}
 
-	return nil
+func (app *App) setupRouter() {
+	taskRepo := repository.NewTaskRepository(app.DB)
+	taskUseCase := usecase.NewTaskUseCase(taskRepo)
+	taskHandler := handler.NewTaskHandler(taskUseCase)
+	app.Router = router.NewRouter(taskHandler)
 }
 
 func (app *App) Run() error {
