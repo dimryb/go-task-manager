@@ -49,3 +49,11 @@ func (app *App) setupRouter() {
 func (app *App) Run() error {
 	return http.ListenAndServe(":8080", app.Router)
 }
+
+func (app *App) Teardown() error {
+	db, err := app.DB.DB()
+	if err != nil {
+		return err
+	}
+	return db.Close()
+}

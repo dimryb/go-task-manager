@@ -26,6 +26,7 @@ build/
 *.local
 *.log
 *.tmp
+!.env.test
 
 # Visual Studio Code
 .vscode/
