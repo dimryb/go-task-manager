@@ -1,13 +1,12 @@
 package tests
 
 import (
+	"go-task-manager/internal/controller/http/models"
+	"go-task-manager/internal/controller/http/v1"
+	"go-task-manager/internal/entity"
 	"net/http"
 	"testing"
 	"time"
-
-	"go-task-manager/internal/domain"
-	"go-task-manager/internal/infrastructure/http/handler"
-	"go-task-manager/internal/infrastructure/http/models"
 
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
@@ -15,7 +14,7 @@ import (
 
 func TestCreateTask_Success(t *testing.T) {
 	mockUseCase := &mockTaskUseCase{
-		CreateTaskFn: func(task *domain.Task) error {
+		CreateTaskFn: func(task *entity.Task) error {
 			if task.Title != "Test Task" || task.Status != "pending" || task.Priority != "high" {
 				t.Fatalf("Task data is incorrect")
 			}
@@ -24,7 +23,7 @@ func TestCreateTask_Success(t *testing.T) {
 		},
 	}
 
-	taskHandler := handler.NewTaskHandler(mockUseCase)
+	taskHandler := v1.NewTaskHandler(mockUseCase)
 	reqBody := models.CreateTaskRequest{
 		Title:       "Test Task",
 		Description: "This is a test task",
@@ -51,7 +50,7 @@ func TestCreateTask_Success(t *testing.T) {
 
 func TestCreateTask_InvalidInput(t *testing.T) {
 	mockUseCase := &mockTaskUseCase{}
-	taskHandler := handler.NewTaskHandler(mockUseCase)
+	taskHandler := v1.NewTaskHandler(mockUseCase)
 
 	apitest.New().
 		HandlerFunc(taskHandler.CreateTask).
@@ -72,7 +71,7 @@ func TestCreateTask_InvalidInput(t *testing.T) {
 func TestCreateTask_ValidationTitleEmpty(t *testing.T) {
 	mockUseCase := &mockTaskUseCase{}
 
-	taskHandler := handler.NewTaskHandler(mockUseCase)
+	taskHandler := v1.NewTaskHandler(mockUseCase)
 	reqBody := models.CreateTaskRequest{
 		Title:    "",
 		Status:   "invalid_status",
@@ -99,7 +98,7 @@ func TestCreateTask_ValidationTitleEmpty(t *testing.T) {
 func TestCreateTask_ValidationInvalidStatus(t *testing.T) {
 	mockUseCase := &mockTaskUseCase{}
 
-	taskHandler := handler.NewTaskHandler(mockUseCase)
+	taskHandler := v1.NewTaskHandler(mockUseCase)
 	reqBody := models.CreateTaskRequest{
 		Title:    "Test Task",
 		Status:   "invalid_status",
@@ -126,7 +125,7 @@ func TestCreateTask_ValidationInvalidStatus(t *testing.T) {
 func TestCreateTask_ValidationInvalidPriority(t *testing.T) {
 	mockUseCase := &mockTaskUseCase{}
 
-	taskHandler := handler.NewTaskHandler(mockUseCase)
+	taskHandler := v1.NewTaskHandler(mockUseCase)
 	reqBody := models.CreateTaskRequest{
 		Title:    "Test Task",
 		Status:   "pending",

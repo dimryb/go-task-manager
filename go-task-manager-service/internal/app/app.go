@@ -2,16 +2,14 @@ package app
 
 import (
 	"github.com/gorilla/mux"
+	"go-task-manager/config"
+	"go-task-manager/internal/controller/http/v1"
+	"go-task-manager/internal/repo/pgdb"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
 
-	"go-task-manager/internal/infrastructure/config"
-	"go-task-manager/internal/infrastructure/database"
-	"go-task-manager/internal/infrastructure/http/handler"
-	"go-task-manager/internal/infrastructure/repository"
-	"go-task-manager/internal/infrastructure/router"
-	"go-task-manager/internal/usecase"
+	"go-task-manager/internal/service"
 )
 
 type App struct {
@@ -32,7 +30,7 @@ func (app *App) Initialize() {
 }
 
 func (app *App) setupDatabase() {
-	db, err := database.Connect(app.Config.DatabaseUrl)
+	db, err := pgdb.Connect(app.Config.DatabaseUrl)
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
@@ -40,10 +38,10 @@ func (app *App) setupDatabase() {
 }
 
 func (app *App) setupRouter() {
-	taskRepo := repository.NewTaskRepository(app.DB)
-	taskUseCase := usecase.NewTaskUseCase(taskRepo)
-	taskHandler := handler.NewTaskHandler(taskUseCase)
-	app.Router = router.NewRouter(taskHandler)
+	taskRepo := pgdb.NewTaskRepository(app.DB)
+	taskUseCase := service.NewTaskUseCase(taskRepo)
+	taskHandler := v1.NewTaskHandler(taskUseCase)
+	app.Router = v1.NewRouter(taskHandler)
 }
 
 func (app *App) Run() error {

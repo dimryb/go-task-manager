@@ -1,8 +1,8 @@
-package repository
+package pgdb
 
 import (
-	"go-task-manager/internal/domain"
-	"go-task-manager/internal/infrastructure/database/models"
+	"go-task-manager/internal/entity"
+	"go-task-manager/internal/repo/pgdb/models"
 	"gorm.io/gorm"
 )
 
@@ -14,7 +14,7 @@ func NewTaskRepository(db *gorm.DB) TaskRepository {
 	return &taskRepository{DB: db}
 }
 
-func (r *taskRepository) Create(task *domain.Task) error {
+func (r *taskRepository) Create(task *entity.Task) error {
 	dbTask := models.Task{
 		Title:       task.Title,
 		Description: task.Description,
@@ -31,18 +31,18 @@ func (r *taskRepository) Create(task *domain.Task) error {
 	return err
 }
 
-func (r *taskRepository) GetAll() ([]domain.Task, error) {
-	return make([]domain.Task, 0), nil //todo: реализовать
+func (r *taskRepository) GetAll() ([]entity.Task, error) {
+	return make([]entity.Task, 0), nil //todo: реализовать
 }
 
-func (r *taskRepository) GetById(id uint) (domain.Task, error) {
+func (r *taskRepository) GetById(id uint) (entity.Task, error) {
 	var dbTask models.Task
 	err := r.DB.First(&dbTask, id).Error
 	if err != nil {
-		return domain.Task{}, err
+		return entity.Task{}, err
 	}
 
-	task := domain.Task{
+	task := entity.Task{
 		ID:          dbTask.ID,
 		Title:       dbTask.Title,
 		Description: dbTask.Description,
@@ -55,7 +55,7 @@ func (r *taskRepository) GetById(id uint) (domain.Task, error) {
 	return task, nil
 }
 
-func (r *taskRepository) Update(task domain.Task) error {
+func (r *taskRepository) Update(task entity.Task) error {
 	return nil //todo: реализовать
 }
 

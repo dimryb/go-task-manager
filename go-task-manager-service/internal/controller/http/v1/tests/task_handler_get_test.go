@@ -5,11 +5,11 @@ import (
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
 	"github.com/stretchr/testify/assert"
+	"go-task-manager/internal/repo/pgdb/models"
 	"net/http"
 	"testing"
 	"time"
 
-	"go-task-manager/internal/infrastructure/database/models"
 	"go-task-manager/tests"
 )
 

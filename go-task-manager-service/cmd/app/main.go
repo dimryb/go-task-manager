@@ -1,8 +1,8 @@
 package main
 
 import (
+	"go-task-manager/config"
 	"go-task-manager/internal/app"
-	"go-task-manager/internal/infrastructure/config"
 	"log"
 )
 

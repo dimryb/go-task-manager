@@ -1,24 +1,24 @@
-package handler
+package v1
 
 import (
 	"encoding/json"
 	"errors"
 	"github.com/gorilla/mux"
+	"go-task-manager/internal/controller/http/models"
+	"go-task-manager/internal/controller/http/rest"
+	"go-task-manager/internal/entity"
 	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 
-	"go-task-manager/internal/domain"
-	"go-task-manager/internal/infrastructure/http/models"
-	"go-task-manager/internal/infrastructure/http/rest"
-	"go-task-manager/internal/usecase"
+	"go-task-manager/internal/service"
 )
 
 type taskHandler struct {
-	TaskUseCase usecase.TaskUseCase
+	TaskUseCase service.TaskUseCase
 }
 
-func NewTaskHandler(useCase usecase.TaskUseCase) TaskHandler {
+func NewTaskHandler(useCase service.TaskUseCase) TaskHandler {
 	return &taskHandler{
 		TaskUseCase: useCase,
 	}
@@ -36,7 +36,7 @@ func (h taskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	task := domain.Task{
+	task := entity.Task{
 		Title:       req.Title,
 		Description: req.Description,
 		Status:      req.Status,
