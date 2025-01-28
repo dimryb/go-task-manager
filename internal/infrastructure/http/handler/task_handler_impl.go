@@ -3,11 +3,15 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"github.com/gorilla/mux"
+	"gorm.io/gorm"
+	"net/http"
+	"strconv"
+
 	"go-task-manager/internal/domain"
 	"go-task-manager/internal/infrastructure/http/models"
 	"go-task-manager/internal/infrastructure/http/rest"
 	"go-task-manager/internal/usecase"
-	"net/http"
 )
 
 type taskHandler struct {
@@ -63,4 +67,29 @@ func validateCreateTaskRequest(req models.CreateTaskRequest) error {
 	}
 
 	return nil
+}
+
+func (h taskHandler) GetTaskById(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		rest.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	task, err := h.TaskUseCase.GetTaskByID(uint(id))
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			rest.WriteError(w, http.StatusNotFound, errors.New("not found"))
+			return
+		}
+		rest.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	rest.WriteJSON(w, http.StatusOK, rest.Response{
+		Ok:     true,
+		Result: task, // todo: в response перевести
+	})
 }

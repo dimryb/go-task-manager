@@ -28,7 +28,11 @@ func (u *taskUseCase) GetTasks() ([]domain.Task, error) {
 }
 
 func (u *taskUseCase) GetTaskByID(id uint) (domain.Task, error) {
-	return u.TaskRepo.GetByID(id)
+	task, err := u.TaskRepo.GetById(id)
+	if err != nil {
+		return domain.Task{}, errors.New("failed to get by ID task: " + err.Error())
+	}
+	return task, nil
 }
 
 func (u *taskUseCase) UpdateTask(task domain.Task) error {
