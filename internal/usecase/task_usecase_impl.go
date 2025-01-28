@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-
 	"go-task-manager/internal/domain"
 	"go-task-manager/internal/infrastructure/repository"
 )
@@ -18,11 +17,10 @@ func NewTaskUseCase(taskRepo repository.TaskRepository) TaskUseCase {
 }
 
 func (u *taskUseCase) CreateTask(task domain.Task) error {
-	if task.Title == "" {
-		return errors.New("ErrInvalidInput")
+	if err := u.TaskRepo.Create(task); err != nil {
+		return errors.New("failed to create task: " + err.Error())
 	}
-
-	return u.TaskRepo.Create(task)
+	return nil
 }
 
 func (u *taskUseCase) GetTasks() ([]domain.Task, error) {
