@@ -5,11 +5,13 @@ go 1.22
 require (
 	github.com/gorilla/mux v1.8.1
 	github.com/joho/godotenv v1.5.1
+	github.com/steinfletcher/apitest v1.5.17
 	gorm.io/driver/postgres v1.5.11
 	gorm.io/gorm v1.25.12
 )
 
 require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx/v5 v5.5.5 // indirect
