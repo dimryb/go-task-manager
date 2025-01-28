@@ -2,8 +2,9 @@ package router
 
 import (
 	"github.com/gorilla/mux"
-	"go-task-manager/internal/interfaces/http/handler"
 	"net/http"
+
+	"go-task-manager/internal/infrastructure/http/handler"
 )
 
 func NewRouter(taskHandler handler.TaskHandler) *mux.Router {

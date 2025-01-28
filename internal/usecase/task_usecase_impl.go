@@ -2,8 +2,9 @@ package usecase
 
 import (
 	"errors"
+
 	"go-task-manager/internal/domain"
-	"go-task-manager/internal/interfaces/repository"
+	"go-task-manager/internal/infrastructure/repository"
 )
 
 type taskUseCase struct {

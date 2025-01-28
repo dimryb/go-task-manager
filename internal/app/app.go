@@ -2,16 +2,16 @@ package app
 
 import (
 	"github.com/gorilla/mux"
-	"go-task-manager/internal/interfaces/database"
-	"go-task-manager/internal/interfaces/repository"
-	"go-task-manager/internal/usecase"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
 
 	"go-task-manager/internal/infrastructure/config"
+	"go-task-manager/internal/infrastructure/database"
+	"go-task-manager/internal/infrastructure/http/handler"
+	"go-task-manager/internal/infrastructure/repository"
 	"go-task-manager/internal/infrastructure/router"
-	"go-task-manager/internal/interfaces/http/handler"
+	"go-task-manager/internal/usecase"
 )
 
 type App struct {

@@ -1,9 +1,10 @@
 package repository
 
 import (
-	"go-task-manager/internal/domain"
-	"go-task-manager/internal/interfaces/database/models"
 	"gorm.io/gorm"
+
+	"go-task-manager/internal/domain"
+	"go-task-manager/internal/infrastructure/database/models"
 )
 
 type taskRepository struct {

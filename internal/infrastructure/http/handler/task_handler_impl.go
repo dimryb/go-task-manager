@@ -2,10 +2,11 @@ package handler
 
 import (
 	"encoding/json"
-	"go-task-manager/internal/domain"
-	"go-task-manager/internal/interfaces/http/models"
-	"go-task-manager/internal/usecase"
 	"net/http"
+
+	"go-task-manager/internal/domain"
+	"go-task-manager/internal/infrastructure/http/models"
+	"go-task-manager/internal/usecase"
 )
 
 type taskHandler struct {
