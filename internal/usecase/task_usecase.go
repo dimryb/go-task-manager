@@ -5,7 +5,7 @@ import (
 )
 
 type TaskUseCase interface {
-	CreateTask(task domain.Task) error
+	CreateTask(task *domain.Task) error
 	GetTasks() ([]domain.Task, error)
 	GetTaskByID(id uint) (domain.Task, error)
 	UpdateTask(task domain.Task) error

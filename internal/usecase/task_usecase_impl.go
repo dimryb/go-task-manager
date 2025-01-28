@@ -16,7 +16,7 @@ func NewTaskUseCase(taskRepo repository.TaskRepository) TaskUseCase {
 	}
 }
 
-func (u *taskUseCase) CreateTask(task domain.Task) error {
+func (u *taskUseCase) CreateTask(task *domain.Task) error {
 	if err := u.TaskRepo.Create(task); err != nil {
 		return errors.New("failed to create task: " + err.Error())
 	}

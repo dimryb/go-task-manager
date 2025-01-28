@@ -5,6 +5,7 @@ import (
 	"errors"
 	"go-task-manager/internal/domain"
 	"go-task-manager/internal/infrastructure/http/models"
+	"go-task-manager/internal/infrastructure/http/rest"
 	"go-task-manager/internal/usecase"
 	"net/http"
 )
@@ -22,12 +23,12 @@ func NewTaskHandler(useCase usecase.TaskUseCase) TaskHandler {
 func (h taskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	var req models.CreateTaskRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Invalid input", http.StatusBadRequest)
+		rest.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	if err := validateCreateTaskRequest(req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		rest.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
@@ -39,13 +40,15 @@ func (h taskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 		DueDate:     req.DueDate,
 	}
 
-	if err := h.TaskUseCase.CreateTask(task); err != nil {
-		http.Error(w, "Failed to create task", http.StatusInternalServerError)
+	if err := h.TaskUseCase.CreateTask(&task); err != nil {
+		rest.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Task created successfully"))
+	rest.WriteJSON(w, http.StatusCreated, rest.Response{
+		Ok:     true,
+		Result: task.ID,
+	})
 }
 
 func validateCreateTaskRequest(req models.CreateTaskRequest) error {

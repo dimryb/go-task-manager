@@ -5,14 +5,14 @@ import (
 )
 
 type mockTaskUseCase struct {
-	CreateTaskFn  func(task domain.Task) error
+	CreateTaskFn  func(task *domain.Task) error
 	GetTasksFn    func() ([]domain.Task, error)
 	GetTaskByIDFn func(id uint) (domain.Task, error)
 	UpdateTaskFn  func(task domain.Task) error
 	DeleteTaskFn  func(id uint) error
 }
 
-func (m *mockTaskUseCase) CreateTask(task domain.Task) error {
+func (m *mockTaskUseCase) CreateTask(task *domain.Task) error {
 	if m.CreateTaskFn != nil {
 		return m.CreateTaskFn(task)
 	}

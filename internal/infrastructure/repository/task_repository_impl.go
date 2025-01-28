@@ -1,10 +1,9 @@
 package repository
 
 import (
-	"gorm.io/gorm"
-
 	"go-task-manager/internal/domain"
 	"go-task-manager/internal/infrastructure/database/models"
+	"gorm.io/gorm"
 )
 
 type taskRepository struct {
@@ -15,14 +14,21 @@ func NewTaskRepository(db *gorm.DB) TaskRepository {
 	return &taskRepository{DB: db}
 }
 
-func (r *taskRepository) Create(task domain.Task) error {
+func (r *taskRepository) Create(task *domain.Task) error {
 	dbTask := models.Task{
-		Title:    task.Title,
-		Status:   task.Status,
-		Priority: task.Priority,
-		DueDate:  task.DueDate,
+		Title:       task.Title,
+		Description: task.Description,
+		Status:      task.Status,
+		Priority:    task.Priority,
+		DueDate:     task.DueDate,
 	}
-	return r.DB.Create(&dbTask).Error
+	err := r.DB.Create(&dbTask).Error
+	if err == nil {
+		task.ID = dbTask.ID
+		task.CreatedAt = dbTask.CreatedAt
+		task.UpdatedAt = dbTask.UpdatedAt
+	}
+	return err
 }
 
 func (r *taskRepository) GetAll() ([]domain.Task, error) {
