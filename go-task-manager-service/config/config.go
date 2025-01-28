@@ -3,23 +3,34 @@ package config
 import (
 	"errors"
 	"github.com/joho/godotenv"
+	"go-task-manager/pkg/utils"
 	"os"
+	"path/filepath"
 )
 
-type Config struct {
-	DatabaseUrl string
-}
+type (
+	Config struct {
+		PG
+	}
 
-func (config *Config) Load(filename string) error {
+	PG struct {
+		URL string
+	}
+)
+
+func NewConfig(configName string) (*Config, error) {
+	cfg := Config{}
+	filename := filepath.Join(utils.GetProjectRoot(), configName)
+
 	err := godotenv.Load(filename)
 	if err != nil {
-		return errors.New("Error loading " + filename)
+		return nil, errors.New("Error loading " + filename)
 	}
 
-	config.DatabaseUrl = os.Getenv("DATABASE_URL")
-	if config.DatabaseUrl == "" {
-		return errors.New("missing DATABASE_URL")
+	cfg.PG.URL = os.Getenv("DATABASE_URL")
+	if cfg.PG.URL == "" {
+		return nil, errors.New("missing DATABASE_URL")
 	}
 
-	return nil
+	return &cfg, nil
 }

@@ -5,11 +5,10 @@ import (
 	"go-task-manager/config"
 	"go-task-manager/internal/controller/http/v1"
 	"go-task-manager/internal/repo/pgdb"
+	"go-task-manager/internal/service"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
-
-	"go-task-manager/internal/service"
 )
 
 type App struct {
@@ -18,19 +17,14 @@ type App struct {
 	DB     *gorm.DB
 }
 
-func NewApp(cfg *config.Config) *App {
+func newApp(cfg *config.Config) *App {
 	return &App{
 		Config: cfg,
 	}
 }
 
-func (app *App) Initialize() {
-	app.setupDatabase()
-	app.setupRouter()
-}
-
 func (app *App) setupDatabase() {
-	db, err := pgdb.Connect(app.Config.DatabaseUrl)
+	db, err := pgdb.Connect(app.Config.PG.URL)
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
@@ -44,14 +38,34 @@ func (app *App) setupRouter() {
 	app.Router = v1.NewRouter(taskHandler)
 }
 
-func (app *App) Run() error {
-	return http.ListenAndServe(":8080", app.Router)
-}
-
 func (app *App) Teardown() error {
 	db, err := app.DB.DB()
 	if err != nil {
 		return err
 	}
 	return db.Close()
+}
+
+func Initialize(configName string) *App {
+	// Configuration
+	cfg, err := config.NewConfig(configName)
+	if err != nil {
+		log.Fatalf("Config error: %s", err)
+	}
+
+	app := newApp(cfg)
+
+	app.setupDatabase()
+	app.setupRouter()
+
+	return app
+}
+
+func Run() {
+	app := Initialize(".env")
+
+	log.Println("Application is starting...")
+	if err := http.ListenAndServe(":8080", app.Router); err != nil {
+		log.Fatalf("Application failed to start: %v", err)
+	}
 }
