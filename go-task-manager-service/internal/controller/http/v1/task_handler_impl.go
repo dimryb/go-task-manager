@@ -246,7 +246,39 @@ func validateUpdateTaskRequest(req models.UpdateTaskRequest) error {
 	return nil
 }
 
+// DeleteTask godoc
+// @Summary Удаление задачи
+// @Description Удаляет задачу по указанному ID
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path int true "ID задачи"
+// @Success 200 {object} rest.Response "Задача успешно удалена"
+// @Failure 400 {object} rest.Response "Некорректный ID задачи"
+// @Failure 404 {object} rest.Response "Задача не найдена"
+// @Failure 500 {object} rest.Response "Ошибка сервера"
+// @Router /tasks/{id} [delete]
 func (h taskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {
-	//TODO implement me
-	panic("implement me")
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		rest.WriteError(w, http.StatusBadRequest, errors.New("invalid task ID"))
+		return
+	}
+
+	err = h.TaskUseCase.DeleteTask(uint(id))
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			rest.WriteError(w, http.StatusNotFound, errors.New("task not found"))
+			return
+		}
+		rest.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	rest.WriteJSON(w, http.StatusOK, rest.Response{
+		Ok:     true,
+		Result: id,
+	})
 }

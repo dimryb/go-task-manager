@@ -94,5 +94,9 @@ func (r *taskRepository) Update(task entity.Task) error {
 }
 
 func (r *taskRepository) Delete(id uint) error {
-	return nil //todo: реализовать
+	result := r.DB.Where("id = ?", id).Delete(&models.Task{})
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return result.Error
 }

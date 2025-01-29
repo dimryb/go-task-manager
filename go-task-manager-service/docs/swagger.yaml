@@ -144,6 +144,38 @@ paths:
       tags:
       - tasks
   /tasks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет задачу по указанному ID
+      parameters:
+      - description: ID задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Задача успешно удалена
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "400":
+          description: Некорректный ID задачи
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "404":
+          description: Задача не найдена
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/rest.Response'
+      summary: Удаление задачи
+      tags:
+      - tasks
     get:
       consumes:
       - application/json
