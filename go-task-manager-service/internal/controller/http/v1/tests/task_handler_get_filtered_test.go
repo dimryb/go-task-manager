@@ -153,3 +153,55 @@ func TestGetFilteredTask_ValidationInvalidPriority(t *testing.T) {
 		).
 		End()
 }
+
+func TestGetFilteredTask_DateSuccess(t *testing.T) {
+	app := tests.AppSetup(t)
+	defer tests.AppTeardown(app)
+
+	db := app.DB
+
+	dateStr := "2025-02-28T12:00:00Z"
+	parsedTime, err := time.Parse(time.RFC3339, dateStr)
+	assert.Nil(t, err)
+
+	tasks := testTasks()
+	tasks = append(tasks,
+		models.Task{
+			Title:       "Task Date",
+			Description: "Date test task",
+			Status:      "in_progress",
+			Priority:    "medium",
+			DueDate:     parsedTime,
+		},
+	)
+
+	for _, task := range tasks {
+		err := db.Create(&task).Error
+		assert.Nil(t, err)
+	}
+
+	url := "/tasks"
+	queryParams := map[string]string{
+		"due_date": dateStr,
+	}
+
+	apitest.
+		Handler(app.Router).
+		Get(url).
+		QueryParams(queryParams).
+		Expect(t).
+		Status(http.StatusOK).
+		Header("Content-Type", "application/json").
+		Assert(jsonpath.Len("result", 1)).
+		Assert(
+			jsonpath.Chain().
+				Equal("ok", true).
+				Equal("result[0].title", "Task Date").
+				Equal("result[0].description", "Date test task").
+				Equal("result[0].status", "in_progress").
+				Equal("result[0].priority", "medium").
+				Equal("result[0].due_date", dateStr).
+				End(),
+		).
+		End()
+}
