@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"go-task-manager/config"
-	"go-task-manager/internal/controller/http/v1"
-	"go-task-manager/internal/repo/pgdb"
+	handler "go-task-manager/internal/controller/http/v1"
+	repository "go-task-manager/internal/repo/pgdb"
 	"go-task-manager/internal/service"
 
 	log "github.com/sirupsen/logrus"
@@ -42,7 +42,7 @@ func (app *App) setupLogger() {
 }
 
 func (app *App) setupDatabase() {
-	db, err := pgdb.Connect(app.Config.PG.URL)
+	db, err := repository.Connect(app.Config.PG.URL)
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
@@ -50,10 +50,14 @@ func (app *App) setupDatabase() {
 }
 
 func (app *App) setupRouter() {
-	taskRepo := pgdb.NewTaskRepository(app.DB)
+	userRepo := repository.NewUserRepository(app.DB)
+	authUseCase := service.NewAuthUseCase(userRepo)
+	authHandler := handler.NewAuthHandler(authUseCase)
+
+	taskRepo := repository.NewTaskRepository(app.DB)
 	taskUseCase := service.NewTaskUseCase(taskRepo)
-	taskHandler := v1.NewTaskHandler(taskUseCase)
-	app.Router = v1.NewRouter(taskHandler)
+	taskHandler := handler.NewTaskHandler(taskUseCase)
+	app.Router = handler.NewRouter(authHandler, taskHandler)
 }
 
 func (app *App) Teardown() error {

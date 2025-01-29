@@ -57,6 +57,8 @@ definitions:
         example: Updated Title
         type: string
     type: object
+  models.User:
+    type: object
   rest.Response:
     properties:
       error:
@@ -74,6 +76,56 @@ info:
   title: Task Manager Service
   version: "1.0"
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/rest.Response'
+      summary: Авторизация пользователя
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.Response'
+      summary: Регистрация пользователя
+      tags:
+      - auth
   /tasks:
     get:
       consumes:
