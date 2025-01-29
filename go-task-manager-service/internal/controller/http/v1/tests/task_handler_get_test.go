@@ -40,10 +40,10 @@ func TestGetTask_Success(t *testing.T) {
 		Assert(
 			jsonpath.Chain().
 				Equal("ok", true).
-				Equal("result.Title", "Test Task").
-				Equal("result.Description", "Task for testing").
-				Equal("result.Status", "pending").
-				Equal("result.Priority", "medium").
+				Equal("result.title", "Test Task").
+				Equal("result.description", "Task for testing").
+				Equal("result.status", "pending").
+				Equal("result.priority", "medium").
 				End(),
 		).
 		End()

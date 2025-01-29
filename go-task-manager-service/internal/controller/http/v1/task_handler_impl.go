@@ -90,6 +90,52 @@ func (h taskHandler) GetTaskById(w http.ResponseWriter, r *http.Request) {
 
 	rest.WriteJSON(w, http.StatusOK, rest.Response{
 		Ok:     true,
-		Result: task, // todo: в response перевести
+		Result: models.NewTaskResponse(task),
 	})
+}
+
+func (h taskHandler) GetTasksFiltered(w http.ResponseWriter, r *http.Request) {
+	queryParams := r.URL.Query()
+
+	status := queryParams.Get("status")
+	priority := queryParams.Get("priority")
+	dueDate := queryParams.Get("due_date")
+	title := queryParams.Get("title")
+
+	if err := validateGetTasksFiltered(status, priority, dueDate); err != nil {
+		rest.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	tasks, err := h.TaskUseCase.GetTasksFiltered(status, priority, dueDate, title)
+	if err != nil {
+		rest.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	rest.WriteJSON(w, http.StatusOK, rest.Response{
+		Ok:     true,
+		Result: models.NewTasksResponse(tasks),
+	})
+}
+
+func validateGetTasksFiltered(status, priority, dueDate string) error {
+	if status != "pending" && status != "in_progress" && status != "done" && status != "" {
+		return errors.New("status must be one of: pending, in_progress, done")
+	}
+	if priority != "low" && priority != "medium" && priority != "high" && priority != "" {
+		return errors.New("priority must be one of: low, medium, high")
+	}
+
+	return nil
+}
+
+func (h taskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h taskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {
+	//TODO implement me
+	panic("implement me")
 }

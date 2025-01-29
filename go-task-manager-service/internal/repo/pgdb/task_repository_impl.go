@@ -31,8 +31,27 @@ func (r *taskRepository) Create(task *entity.Task) error {
 	return err
 }
 
-func (r *taskRepository) GetAll() ([]entity.Task, error) {
-	return make([]entity.Task, 0), nil //todo: реализовать
+func (r *taskRepository) GetFiltered(status, priority, dueDate, title string) ([]entity.Task, error) {
+	var tasks []entity.Task
+	db := r.DB
+
+	if status != "" {
+		db = db.Where("status = ?", status)
+	}
+	if priority != "" {
+		db = db.Where("priority = ?", priority)
+	}
+	if dueDate != "" {
+		db = db.Where("due_date = ?", dueDate)
+	}
+	if title != "" {
+		db = db.Where("title LIKE ?", "%"+title+"%")
+	}
+
+	if err := db.Find(&tasks).Error; err != nil {
+		return nil, err
+	}
+	return tasks, nil
 }
 
 func (r *taskRepository) GetById(id uint) (entity.Task, error) {

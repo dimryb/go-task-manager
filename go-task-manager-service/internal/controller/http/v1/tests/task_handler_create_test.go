@@ -13,7 +13,7 @@ import (
 )
 
 func TestCreateTask_Success(t *testing.T) {
-	mockUseCase := &mockTaskUseCase{
+	mockUseCase := &MockTaskUseCase{
 		CreateTaskFn: func(task *entity.Task) error {
 			if task.Title != "Test Task" || task.Status != "pending" || task.Priority != "high" {
 				t.Fatalf("Task data is incorrect")
@@ -49,7 +49,7 @@ func TestCreateTask_Success(t *testing.T) {
 }
 
 func TestCreateTask_InvalidInput(t *testing.T) {
-	mockUseCase := &mockTaskUseCase{}
+	mockUseCase := &MockTaskUseCase{}
 	taskHandler := v1.NewTaskHandler(mockUseCase)
 
 	apitest.New().
@@ -69,7 +69,7 @@ func TestCreateTask_InvalidInput(t *testing.T) {
 }
 
 func TestCreateTask_ValidationTitleEmpty(t *testing.T) {
-	mockUseCase := &mockTaskUseCase{}
+	mockUseCase := &MockTaskUseCase{}
 
 	taskHandler := v1.NewTaskHandler(mockUseCase)
 	reqBody := models.CreateTaskRequest{
@@ -96,7 +96,7 @@ func TestCreateTask_ValidationTitleEmpty(t *testing.T) {
 }
 
 func TestCreateTask_ValidationInvalidStatus(t *testing.T) {
-	mockUseCase := &mockTaskUseCase{}
+	mockUseCase := &MockTaskUseCase{}
 
 	taskHandler := v1.NewTaskHandler(mockUseCase)
 	reqBody := models.CreateTaskRequest{
@@ -123,7 +123,7 @@ func TestCreateTask_ValidationInvalidStatus(t *testing.T) {
 }
 
 func TestCreateTask_ValidationInvalidPriority(t *testing.T) {
-	mockUseCase := &mockTaskUseCase{}
+	mockUseCase := &MockTaskUseCase{}
 
 	taskHandler := v1.NewTaskHandler(mockUseCase)
 	reqBody := models.CreateTaskRequest{

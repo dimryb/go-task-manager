@@ -23,8 +23,12 @@ func (u *taskUseCase) CreateTask(task *entity.Task) error {
 	return nil
 }
 
-func (u *taskUseCase) GetTasks() ([]entity.Task, error) {
-	return u.TaskRepo.GetAll()
+func (u *taskUseCase) GetTasksFiltered(status, priority, dueDate, title string) ([]entity.Task, error) {
+	tasks, err := u.TaskRepo.GetFiltered(status, priority, dueDate, title)
+	if err != nil {
+		return nil, errors.New("failed to get tasks filtered: " + err.Error())
+	}
+	return tasks, nil
 }
 
 func (u *taskUseCase) GetTaskByID(id uint) (entity.Task, error) {

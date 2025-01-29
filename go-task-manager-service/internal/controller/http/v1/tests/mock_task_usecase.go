@@ -4,43 +4,43 @@ import (
 	"go-task-manager/internal/entity"
 )
 
-type mockTaskUseCase struct {
-	CreateTaskFn  func(task *entity.Task) error
-	GetTasksFn    func() ([]entity.Task, error)
-	GetTaskByIDFn func(id uint) (entity.Task, error)
-	UpdateTaskFn  func(task entity.Task) error
-	DeleteTaskFn  func(id uint) error
+type MockTaskUseCase struct {
+	CreateTaskFn       func(task *entity.Task) error
+	GetTasksFilteredFn func(status, priority, dueDate, title string) ([]entity.Task, error)
+	GetTaskByIDFn      func(id uint) (entity.Task, error)
+	UpdateTaskFn       func(task entity.Task) error
+	DeleteTaskFn       func(id uint) error
 }
 
-func (m *mockTaskUseCase) CreateTask(task *entity.Task) error {
+func (m *MockTaskUseCase) CreateTask(task *entity.Task) error {
 	if m.CreateTaskFn != nil {
 		return m.CreateTaskFn(task)
 	}
 	return nil
 }
 
-func (m *mockTaskUseCase) GetTasks() ([]entity.Task, error) {
-	if m.GetTasksFn != nil {
-		return m.GetTasksFn()
+func (m *MockTaskUseCase) GetTasksFiltered(status, priority, dueDate, title string) ([]entity.Task, error) {
+	if m.GetTasksFilteredFn != nil {
+		return m.GetTasksFilteredFn(status, priority, dueDate, title)
 	}
 	return nil, nil
 }
 
-func (m *mockTaskUseCase) GetTaskByID(id uint) (entity.Task, error) {
+func (m *MockTaskUseCase) GetTaskByID(id uint) (entity.Task, error) {
 	if m.GetTaskByIDFn != nil {
 		return m.GetTaskByIDFn(id)
 	}
 	return entity.Task{}, nil
 }
 
-func (m *mockTaskUseCase) UpdateTask(task entity.Task) error {
+func (m *MockTaskUseCase) UpdateTask(task entity.Task) error {
 	if m.UpdateTaskFn != nil {
 		return m.UpdateTaskFn(task)
 	}
 	return nil
 }
 
-func (m *mockTaskUseCase) DeleteTask(id uint) error {
+func (m *MockTaskUseCase) DeleteTask(id uint) error {
 	if m.DeleteTaskFn != nil {
 		return m.DeleteTaskFn(id)
 	}
