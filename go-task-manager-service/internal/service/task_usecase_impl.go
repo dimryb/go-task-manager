@@ -32,11 +32,7 @@ func (u *taskUseCase) GetTasksFiltered(status, priority, dueDate, title string) 
 }
 
 func (u *taskUseCase) GetTaskByID(id uint) (entity.Task, error) {
-	task, err := u.TaskRepo.GetById(id)
-	if err != nil {
-		return entity.Task{}, errors.New("failed to get by ID task: " + err.Error())
-	}
-	return task, nil
+	return u.TaskRepo.GetById(id)
 }
 
 func (u *taskUseCase) UpdateTask(task entity.Task) error {
