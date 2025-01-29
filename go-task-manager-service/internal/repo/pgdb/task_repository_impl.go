@@ -4,6 +4,7 @@ import (
 	"go-task-manager/internal/entity"
 	"go-task-manager/internal/repo/pgdb/models"
 	"gorm.io/gorm"
+	"time"
 )
 
 type taskRepository struct {
@@ -75,7 +76,21 @@ func (r *taskRepository) GetById(id uint) (entity.Task, error) {
 }
 
 func (r *taskRepository) Update(task entity.Task) error {
-	return nil //todo: реализовать
+	dbTask := models.Task{
+		ID:          task.ID,
+		Title:       task.Title,
+		Description: task.Description,
+		Status:      task.Status,
+		Priority:    task.Priority,
+		DueDate:     task.DueDate,
+		UpdatedAt:   time.Now(),
+	}
+
+	err := r.DB.Model(&dbTask).Where("id = ?", task.ID).Updates(dbTask).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *taskRepository) Delete(id uint) error {

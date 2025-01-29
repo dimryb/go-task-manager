@@ -31,6 +31,32 @@ definitions:
     - status
     - title
     type: object
+  models.UpdateTaskRequest:
+    properties:
+      description:
+        example: Updated Description
+        type: string
+      due_date:
+        example: "2025-02-01T15:00:00Z"
+        type: string
+      priority:
+        enum:
+        - low
+        - medium
+        - high
+        example: high
+        type: string
+      status:
+        enum:
+        - pending
+        - in_progress
+        - done
+        example: in_progress
+        type: string
+      title:
+        example: Updated Title
+        type: string
+    type: object
   rest.Response:
     properties:
       error:
@@ -147,7 +173,45 @@ paths:
           description: Ошибка сервера
           schema:
             $ref: '#/definitions/rest.Response'
-      summary: Получение задачи по ID
+      summary: Получение задачи по ID (вспомогательная)
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Обновляет информацию о задаче
+      parameters:
+      - description: ID задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Данные для обновления
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "400":
+          description: Некорректные данные
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "404":
+          description: Задача не найдена
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/rest.Response'
+      summary: Обновление задачи
       tags:
       - tasks
 swagger: "2.0"

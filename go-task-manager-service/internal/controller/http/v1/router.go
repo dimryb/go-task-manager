@@ -16,5 +16,6 @@ func NewRouter(taskHandler TaskHandler) *mux.Router {
 	r.HandleFunc(`/tasks/{id}`, taskHandler.GetTaskById).Methods(http.MethodGet)
 	r.HandleFunc(`/tasks`, taskHandler.CreateTask).Methods(http.MethodPost)
 	r.HandleFunc(`/tasks`, taskHandler.GetTasksFiltered).Methods(http.MethodGet)
+	r.HandleFunc(`/tasks/{id}`, taskHandler.UpdateTask).Methods(http.MethodPut)
 	return r
 }

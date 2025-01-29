@@ -13,6 +13,14 @@ type CreateTaskRequest struct {
 	DueDate     time.Time `json:"due_date" binding:"required" example:"2025-01-28T12:00:00Z"`
 }
 
+type UpdateTaskRequest struct {
+	Title       *string    `json:"title" example:"Updated Title"`
+	Description *string    `json:"description" example:"Updated Description"`
+	Status      *string    `json:"status" binding:"oneof=pending in_progress done" example:"in_progress"`
+	Priority    *string    `json:"priority" binding:"oneof=low medium high" example:"high"`
+	DueDate     *time.Time `json:"due_date" example:"2025-02-01T15:00:00Z"`
+}
+
 type TaskResponse struct {
 	ID          uint   `json:"id"`
 	Title       string `json:"title"`

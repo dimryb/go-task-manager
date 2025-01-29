@@ -40,7 +40,10 @@ func (u *taskUseCase) GetTaskByID(id uint) (entity.Task, error) {
 }
 
 func (u *taskUseCase) UpdateTask(task entity.Task) error {
-	return u.TaskRepo.Update(task)
+	if err := u.TaskRepo.Update(task); err != nil {
+		return errors.New("failed to update task: " + err.Error())
+	}
+	return nil
 }
 
 func (u *taskUseCase) DeleteTask(id uint) error {

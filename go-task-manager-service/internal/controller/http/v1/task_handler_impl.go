@@ -81,7 +81,7 @@ func validateCreateTaskRequest(req models.CreateTaskRequest) error {
 }
 
 // GetTaskById godoc
-// @Summary Получение задачи по ID
+// @Summary Получение задачи по ID (вспомогательная)
 // @Description Возвращает задачу по её ID
 // @Tags tasks
 // @Accept json
@@ -167,9 +167,83 @@ func validateGetTasksFiltered(status, priority, dueDate string) error {
 	return nil
 }
 
+// UpdateTask godoc
+// @Summary Обновление задачи
+// @Description Обновляет информацию о задаче
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path int true "ID задачи"
+// @Param task body models.UpdateTaskRequest true "Данные для обновления"
+// @Success 200 {object} rest.Response
+// @Failure 400 {object} rest.Response "Некорректные данные"
+// @Failure 404 {object} rest.Response "Задача не найдена"
+// @Failure 500 {object} rest.Response "Ошибка сервера"
+// @Router /tasks/{id} [put]
 func (h taskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
-	//TODO implement me
-	panic("implement me")
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		rest.WriteError(w, http.StatusBadRequest, errors.New("invalid task ID"))
+		return
+	}
+
+	var req models.UpdateTaskRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		rest.WriteError(w, http.StatusBadRequest, errors.New("invalid request body"))
+		return
+	}
+
+	if err := validateUpdateTaskRequest(req); err != nil {
+		rest.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	task, err := h.TaskUseCase.GetTaskByID(uint(id))
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			rest.WriteError(w, http.StatusNotFound, errors.New("task not found"))
+			return
+		}
+		rest.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if req.Title != nil {
+		task.Title = *req.Title
+	}
+	if req.Description != nil {
+		task.Description = *req.Description
+	}
+	if req.Status != nil {
+		task.Status = *req.Status
+	}
+	if req.Priority != nil {
+		task.Priority = *req.Priority
+	}
+	if req.DueDate != nil {
+		task.DueDate = *req.DueDate
+	}
+
+	if err := h.TaskUseCase.UpdateTask(task); err != nil {
+		rest.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+}
+
+func validateUpdateTaskRequest(req models.UpdateTaskRequest) error {
+	if req.Title != nil && *req.Title == "" {
+		return errors.New("title is required")
+	}
+	if req.Status != nil && *req.Status != "pending" && *req.Status != "in_progress" && *req.Status != "done" {
+		return errors.New("status must be one of: pending, in_progress, done")
+	}
+	if req.Priority != nil && *req.Priority != "low" && *req.Priority != "medium" && *req.Priority != "high" {
+		return errors.New("priority must be one of: low, medium, high")
+	}
+
+	return nil
 }
 
 func (h taskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {
