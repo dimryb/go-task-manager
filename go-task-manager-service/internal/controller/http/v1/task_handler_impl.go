@@ -24,6 +24,17 @@ func NewTaskHandler(useCase service.TaskUseCase) TaskHandler {
 	}
 }
 
+// CreateTask godoc
+// @Summary Создание задачи
+// @Description Создает новую задачу
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param request body models.CreateTaskRequest true "Создание задачи"
+// @Success 201 {object} rest.Response
+// @Failure 400 {object} rest.Response "Некорректный запрос"
+// @Failure 500 {object} rest.Response "Ошибка сервера"
+// @Router /tasks [post]
 func (h taskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	var req models.CreateTaskRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -69,6 +80,18 @@ func validateCreateTaskRequest(req models.CreateTaskRequest) error {
 	return nil
 }
 
+// GetTaskById godoc
+// @Summary Получение задачи по ID
+// @Description Возвращает задачу по её ID
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path int true "ID задачи"
+// @Success 200 {object} rest.Response
+// @Failure 400 {object} rest.Response "Некорректный ID"
+// @Failure 404 {object} rest.Response "Задача не найдена"
+// @Failure 500 {object} rest.Response "Ошибка сервера"
+// @Router /tasks/{id} [get]
 func (h taskHandler) GetTaskById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	idStr := vars["id"]
@@ -94,6 +117,20 @@ func (h taskHandler) GetTaskById(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// GetTasksFiltered godoc
+// @Summary Получение списка задач с фильтрацией
+// @Description Возвращает задачи, отфильтрованные по статусу, приоритету и дате
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param status query string false "Статус (pending, in_progress, done)"
+// @Param priority query string false "Приоритет (low, medium, high)"
+// @Param due_date query string false "Дата выполнения формат: 2020-01-01T12:00:00Z"
+// @Param title query string false "Название задачи"
+// @Success 200 {object} rest.Response
+// @Failure 400 {object} rest.Response "Некорректные параметры запроса"
+// @Failure 500 {object} rest.Response "Ошибка сервера"
+// @Router /tasks [get]
 func (h taskHandler) GetTasksFiltered(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 

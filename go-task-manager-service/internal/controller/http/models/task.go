@@ -6,11 +6,11 @@ import (
 )
 
 type CreateTaskRequest struct {
-	Title       string    `json:"title" binding:"required"`
-	Description string    `json:"description"`
-	Status      string    `json:"status" binding:"required,oneof=pending in_progress done"`
-	Priority    string    `json:"priority" binding:"required,oneof=low medium high"`
-	DueDate     time.Time `json:"due_date" binding:"required"`
+	Title       string    `json:"title" binding:"required" example:"Title"`
+	Description string    `json:"description" example:"Description"`
+	Status      string    `json:"status" binding:"required,oneof=pending in_progress done" example:"pending"`
+	Priority    string    `json:"priority" binding:"required,oneof=low medium high" example:"medium"`
+	DueDate     time.Time `json:"due_date" binding:"required" example:"2025-01-28T12:00:00Z"`
 }
 
 type TaskResponse struct {

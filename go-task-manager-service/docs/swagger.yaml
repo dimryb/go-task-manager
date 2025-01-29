@@ -1,0 +1,153 @@
+basePath: /
+definitions:
+  models.CreateTaskRequest:
+    properties:
+      description:
+        example: Description
+        type: string
+      due_date:
+        example: "2025-01-28T12:00:00Z"
+        type: string
+      priority:
+        enum:
+        - low
+        - medium
+        - high
+        example: medium
+        type: string
+      status:
+        enum:
+        - pending
+        - in_progress
+        - done
+        example: pending
+        type: string
+      title:
+        example: Title
+        type: string
+    required:
+    - due_date
+    - priority
+    - status
+    - title
+    type: object
+  rest.Response:
+    properties:
+      error:
+        type: string
+      ok:
+        type: boolean
+      result: {}
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: dimryb@bk.ru
+    name: Rybakov Dmitry
+  description: This is a service for managing tasks.
+  title: Task Manager Service
+  version: "1.0"
+paths:
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает задачи, отфильтрованные по статусу, приоритету и дате
+      parameters:
+      - description: Статус (pending, in_progress, done)
+        in: query
+        name: status
+        type: string
+      - description: Приоритет (low, medium, high)
+        in: query
+        name: priority
+        type: string
+      - description: 'Дата выполнения формат: 2020-01-01T12:00:00Z'
+        in: query
+        name: due_date
+        type: string
+      - description: Название задачи
+        in: query
+        name: title
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "400":
+          description: Некорректные параметры запроса
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/rest.Response'
+      summary: Получение списка задач с фильтрацией
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Создает новую задачу
+      parameters:
+      - description: Создание задачи
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "400":
+          description: Некорректный запрос
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/rest.Response'
+      summary: Создание задачи
+      tags:
+      - tasks
+  /tasks/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает задачу по её ID
+      parameters:
+      - description: ID задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "400":
+          description: Некорректный ID
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "404":
+          description: Задача не найдена
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/rest.Response'
+      summary: Получение задачи по ID
+      tags:
+      - tasks
+swagger: "2.0"

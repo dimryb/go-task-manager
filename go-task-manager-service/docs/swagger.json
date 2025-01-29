@@ -1,0 +1,226 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a service for managing tasks.",
+        "title": "Task Manager Service",
+        "contact": {
+            "name": "Rybakov Dmitry",
+            "email": "dimryb@bk.ru"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/tasks": {
+            "get": {
+                "description": "Возвращает задачи, отфильтрованные по статусу, приоритету и дате",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Получение списка задач с фильтрацией",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Статус (pending, in_progress, done)",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Приоритет (low, medium, high)",
+                        "name": "priority",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Дата выполнения формат: 2020-01-01T12:00:00Z",
+                        "name": "due_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Название задачи",
+                        "name": "title",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/rest.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные параметры запроса",
+                        "schema": {
+                            "$ref": "#/definitions/rest.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/rest.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Создает новую задачу",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Создание задачи",
+                "parameters": [
+                    {
+                        "description": "Создание задачи",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateTaskRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/rest.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректный запрос",
+                        "schema": {
+                            "$ref": "#/definitions/rest.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/rest.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks/{id}": {
+            "get": {
+                "description": "Возвращает задачу по её ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Получение задачи по ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID задачи",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/rest.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректный ID",
+                        "schema": {
+                            "$ref": "#/definitions/rest.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Задача не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/rest.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/rest.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.CreateTaskRequest": {
+            "type": "object",
+            "required": [
+                "due_date",
+                "priority",
+                "status",
+                "title"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Description"
+                },
+                "due_date": {
+                    "type": "string",
+                    "example": "2025-01-28T12:00:00Z"
+                },
+                "priority": {
+                    "type": "string",
+                    "enum": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "example": "medium"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "pending",
+                        "in_progress",
+                        "done"
+                    ],
+                    "example": "pending"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Title"
+                }
+            }
+        },
+        "rest.Response": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "ok": {
+                    "type": "boolean"
+                },
+                "result": {}
+            }
+        }
+    }
+}
