@@ -31,6 +31,30 @@ definitions:
     - status
     - title
     type: object
+  models.LoginUserRequest:
+    properties:
+      password:
+        example: "123456"
+        type: string
+      username:
+        example: testuser
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  models.RegisterUserRequest:
+    properties:
+      password:
+        example: "123456"
+        type: string
+      username:
+        example: testuser
+        type: string
+    required:
+    - password
+    - username
+    type: object
   models.UpdateTaskRequest:
     properties:
       description:
@@ -56,8 +80,6 @@ definitions:
       title:
         example: Updated Title
         type: string
-    type: object
-  models.User:
     type: object
   rest.Response:
     properties:
@@ -86,7 +108,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/models.LoginUserRequest'
       produces:
       - application/json
       responses:
@@ -111,7 +133,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/models.RegisterUserRequest'
       produces:
       - application/json
       responses:
@@ -131,6 +153,7 @@ paths:
       consumes:
       - application/json
       description: Возвращает задачи, отфильтрованные по статусу, приоритету и дате
+        (требуется авторизация)
       parameters:
       - description: Статус (pending, in_progress, done)
         in: query
@@ -163,13 +186,15 @@ paths:
           description: Ошибка сервера
           schema:
             $ref: '#/definitions/rest.Response'
+      security:
+      - JWT: []
       summary: Получение списка задач с фильтрацией
       tags:
       - tasks
     post:
       consumes:
       - application/json
-      description: Создает новую задачу
+      description: Создает новую задачу (требуется авторизация)
       parameters:
       - description: Создание задачи
         in: body
@@ -188,10 +213,16 @@ paths:
           description: Некорректный запрос
           schema:
             $ref: '#/definitions/rest.Response'
+        "401":
+          description: Неавторизованный доступ
+          schema:
+            $ref: '#/definitions/rest.Response'
         "500":
           description: Ошибка сервера
           schema:
             $ref: '#/definitions/rest.Response'
+      security:
+      - JWT: []
       summary: Создание задачи
       tags:
       - tasks
@@ -199,7 +230,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Удаляет задачу по указанному ID
+      description: Удаляет задачу по указанному ID (требуется авторизация)
       parameters:
       - description: ID задачи
         in: path
@@ -225,13 +256,15 @@ paths:
           description: Ошибка сервера
           schema:
             $ref: '#/definitions/rest.Response'
+      security:
+      - JWT: []
       summary: Удаление задачи
       tags:
       - tasks
     get:
       consumes:
       - application/json
-      description: Возвращает задачу по её ID
+      description: Возвращает задачу по её ID (требуется авторизация)
       parameters:
       - description: ID задачи
         in: path
@@ -257,13 +290,15 @@ paths:
           description: Ошибка сервера
           schema:
             $ref: '#/definitions/rest.Response'
-      summary: Получение задачи по ID (вспомогательная)
+      security:
+      - JWT: []
+      summary: Получение задачи по ID
       tags:
       - tasks
     put:
       consumes:
       - application/json
-      description: Обновляет информацию о задаче
+      description: Обновляет информацию о задаче (требуется авторизация)
       parameters:
       - description: ID задачи
         in: path
@@ -295,7 +330,15 @@ paths:
           description: Ошибка сервера
           schema:
             $ref: '#/definitions/rest.Response'
+      security:
+      - JWT: []
       summary: Обновление задачи
       tags:
       - tasks
+securityDefinitions:
+  JWT:
+    description: JWT token
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

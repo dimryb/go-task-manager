@@ -17,14 +17,14 @@ func NewRouter(authHandler AuthHandler, taskHandler TaskHandler) *mux.Router {
 	r.HandleFunc("/auth/register", authHandler.Register).Methods(http.MethodPost)
 	r.HandleFunc("/auth/login", authHandler.Login).Methods(http.MethodPost)
 
-	api := r.PathPrefix("/api").Subrouter()
-	api.Use(middleware.JWTMiddleware)
+	protected := r.NewRoute().Subrouter()
+	protected.Use(middleware.JWTMiddleware)
 
-	r.HandleFunc(`/tasks/{id}`, taskHandler.GetTaskById).Methods(http.MethodGet)
-	r.HandleFunc(`/tasks`, taskHandler.CreateTask).Methods(http.MethodPost)
-	r.HandleFunc(`/tasks`, taskHandler.GetTasksFiltered).Methods(http.MethodGet)
-	r.HandleFunc(`/tasks/{id}`, taskHandler.UpdateTask).Methods(http.MethodPut)
-	r.HandleFunc("/tasks/{id}", taskHandler.DeleteTask).Methods(http.MethodDelete)
+	protected.HandleFunc(`/tasks/{id}`, taskHandler.GetTaskById).Methods(http.MethodGet)
+	protected.HandleFunc(`/tasks`, taskHandler.CreateTask).Methods(http.MethodPost)
+	protected.HandleFunc(`/tasks`, taskHandler.GetTasksFiltered).Methods(http.MethodGet)
+	protected.HandleFunc(`/tasks/{id}`, taskHandler.UpdateTask).Methods(http.MethodPut)
+	protected.HandleFunc("/tasks/{id}", taskHandler.DeleteTask).Methods(http.MethodDelete)
 
 	return r
 }

@@ -14,6 +14,11 @@ import (
 // @host      localhost:8080
 // @BasePath  /
 
+// @securityDefinitions.apikey JWT
+// @in header
+// @name Authorization
+// @description					JWT token
+
 func main() {
 	app.Run(".env")
 }

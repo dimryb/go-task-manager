@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/gorilla/mux"
-	"go-task-manager/internal/controller/http/models"
-	"go-task-manager/internal/controller/http/rest"
-	"go-task-manager/internal/entity"
 	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 
+	"go-task-manager/internal/controller/http/models"
+	"go-task-manager/internal/controller/http/rest"
+	"go-task-manager/internal/entity"
 	"go-task-manager/internal/service"
 )
 
@@ -26,14 +26,16 @@ func NewTaskHandler(useCase service.TaskUseCase) TaskHandler {
 
 // CreateTask godoc
 // @Summary Создание задачи
-// @Description Создает новую задачу
+// @Description Создает новую задачу (требуется авторизация)
 // @Tags tasks
 // @Accept json
 // @Produce json
 // @Param request body models.CreateTaskRequest true "Создание задачи"
 // @Success 201 {object} rest.Response
 // @Failure 400 {object} rest.Response "Некорректный запрос"
+// @Failure 401 {object} rest.Response "Неавторизованный доступ"
 // @Failure 500 {object} rest.Response "Ошибка сервера"
+// @Security JWT
 // @Router /tasks [post]
 func (h taskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	var req models.CreateTaskRequest
@@ -81,8 +83,8 @@ func validateCreateTaskRequest(req models.CreateTaskRequest) error {
 }
 
 // GetTaskById godoc
-// @Summary Получение задачи по ID (вспомогательная)
-// @Description Возвращает задачу по её ID
+// @Summary Получение задачи по ID
+// @Description Возвращает задачу по её ID (требуется авторизация)
 // @Tags tasks
 // @Accept json
 // @Produce json
@@ -91,6 +93,7 @@ func validateCreateTaskRequest(req models.CreateTaskRequest) error {
 // @Failure 400 {object} rest.Response "Некорректный ID"
 // @Failure 404 {object} rest.Response "Задача не найдена"
 // @Failure 500 {object} rest.Response "Ошибка сервера"
+// @Security JWT
 // @Router /tasks/{id} [get]
 func (h taskHandler) GetTaskById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -119,7 +122,7 @@ func (h taskHandler) GetTaskById(w http.ResponseWriter, r *http.Request) {
 
 // GetTasksFiltered godoc
 // @Summary Получение списка задач с фильтрацией
-// @Description Возвращает задачи, отфильтрованные по статусу, приоритету и дате
+// @Description Возвращает задачи, отфильтрованные по статусу, приоритету и дате (требуется авторизация)
 // @Tags tasks
 // @Accept json
 // @Produce json
@@ -130,6 +133,7 @@ func (h taskHandler) GetTaskById(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} rest.Response
 // @Failure 400 {object} rest.Response "Некорректные параметры запроса"
 // @Failure 500 {object} rest.Response "Ошибка сервера"
+// @Security JWT
 // @Router /tasks [get]
 func (h taskHandler) GetTasksFiltered(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
@@ -169,7 +173,7 @@ func validateGetTasksFiltered(status, priority, dueDate string) error {
 
 // UpdateTask godoc
 // @Summary Обновление задачи
-// @Description Обновляет информацию о задаче
+// @Description Обновляет информацию о задаче (требуется авторизация)
 // @Tags tasks
 // @Accept json
 // @Produce json
@@ -179,6 +183,7 @@ func validateGetTasksFiltered(status, priority, dueDate string) error {
 // @Failure 400 {object} rest.Response "Некорректные данные"
 // @Failure 404 {object} rest.Response "Задача не найдена"
 // @Failure 500 {object} rest.Response "Ошибка сервера"
+// @Security JWT
 // @Router /tasks/{id} [put]
 func (h taskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -248,7 +253,7 @@ func validateUpdateTaskRequest(req models.UpdateTaskRequest) error {
 
 // DeleteTask godoc
 // @Summary Удаление задачи
-// @Description Удаляет задачу по указанному ID
+// @Description Удаляет задачу по указанному ID (требуется авторизация)
 // @Tags tasks
 // @Accept json
 // @Produce json
@@ -257,6 +262,7 @@ func validateUpdateTaskRequest(req models.UpdateTaskRequest) error {
 // @Failure 400 {object} rest.Response "Некорректный ID задачи"
 // @Failure 404 {object} rest.Response "Задача не найдена"
 // @Failure 500 {object} rest.Response "Ошибка сервера"
+// @Security JWT
 // @Router /tasks/{id} [delete]
 func (h taskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

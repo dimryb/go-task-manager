@@ -37,7 +37,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/models.LoginUserRequest"
                         }
                     }
                 ],
@@ -76,7 +76,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/models.RegisterUserRequest"
                         }
                     }
                 ],
@@ -98,7 +98,12 @@ const docTemplate = `{
         },
         "/tasks": {
             "get": {
-                "description": "Возвращает задачи, отфильтрованные по статусу, приоритету и дате",
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Возвращает задачи, отфильтрованные по статусу, приоритету и дате (требуется авторизация)",
                 "consumes": [
                     "application/json"
                 ],
@@ -157,7 +162,12 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Создает новую задачу",
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Создает новую задачу (требуется авторизация)",
                 "consumes": [
                     "application/json"
                 ],
@@ -192,6 +202,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/rest.Response"
                         }
                     },
+                    "401": {
+                        "description": "Неавторизованный доступ",
+                        "schema": {
+                            "$ref": "#/definitions/rest.Response"
+                        }
+                    },
                     "500": {
                         "description": "Ошибка сервера",
                         "schema": {
@@ -203,7 +219,12 @@ const docTemplate = `{
         },
         "/tasks/{id}": {
             "get": {
-                "description": "Возвращает задачу по её ID",
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Возвращает задачу по её ID (требуется авторизация)",
                 "consumes": [
                     "application/json"
                 ],
@@ -213,7 +234,7 @@ const docTemplate = `{
                 "tags": [
                     "tasks"
                 ],
-                "summary": "Получение задачи по ID (вспомогательная)",
+                "summary": "Получение задачи по ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -251,7 +272,12 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Обновляет информацию о задаче",
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Обновляет информацию о задаче (требуется авторизация)",
                 "consumes": [
                     "application/json"
                 ],
@@ -308,7 +334,12 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Удаляет задачу по указанному ID",
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Удаляет задачу по указанному ID (требуется авторизация)",
                 "consumes": [
                     "application/json"
                 ],
@@ -399,6 +430,40 @@ const docTemplate = `{
                 }
             }
         },
+        "models.LoginUserRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "123456"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "testuser"
+                }
+            }
+        },
+        "models.RegisterUserRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "123456"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "testuser"
+                }
+            }
+        },
         "models.UpdateTaskRequest": {
             "type": "object",
             "properties": {
@@ -434,9 +499,6 @@ const docTemplate = `{
                 }
             }
         },
-        "models.User": {
-            "type": "object"
-        },
         "rest.Response": {
             "type": "object",
             "properties": {
@@ -448,6 +510,14 @@ const docTemplate = `{
                 },
                 "result": {}
             }
+        }
+    },
+    "securityDefinitions": {
+        "JWT": {
+            "description": "JWT token",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

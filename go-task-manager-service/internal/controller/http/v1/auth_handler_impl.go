@@ -2,9 +2,11 @@ package v1
 
 import (
 	"encoding/json"
+	"net/http"
+
+	"go-task-manager/internal/controller/http/models"
 	"go-task-manager/internal/controller/http/rest"
 	"go-task-manager/internal/service"
-	"net/http"
 )
 
 type authHandler struct {
@@ -20,15 +22,12 @@ func NewAuthHandler(authUseCase service.AuthUseCase) AuthHandler {
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param user body models.User true "Данные пользователя"
+// @Param user body models.RegisterUserRequest true "Данные пользователя"
 // @Success 201 {object} rest.Response
 // @Failure 400 {object} rest.Response
 // @Router /auth/register [post]
 func (h authHandler) Register(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
+	var req models.RegisterUserRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		rest.WriteError(w, http.StatusBadRequest, err)
@@ -49,7 +48,7 @@ func (h authHandler) Register(w http.ResponseWriter, r *http.Request) {
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param user body models.User true "Данные пользователя"
+// @Param user body models.LoginUserRequest true "Данные пользователя"
 // @Success 200 {object} rest.Response
 // @Failure 401 {object} rest.Response
 // @Router /auth/login [post]
