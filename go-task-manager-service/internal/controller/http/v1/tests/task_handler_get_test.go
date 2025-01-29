@@ -19,6 +19,9 @@ func TestGetTask_Success(t *testing.T) {
 
 	db := app.DB
 
+	token := GetAuthToken(t)
+	assert.NotEmpty(t, token)
+
 	task := models.Task{
 		Title:       "Test Task",
 		Description: "Task for testing",
@@ -34,6 +37,7 @@ func TestGetTask_Success(t *testing.T) {
 	apitest.
 		Handler(app.Router).
 		Get(url).
+		Header("Authorization", "Bearer "+token).
 		Expect(t).
 		Status(http.StatusOK).
 		Header("Content-Type", "application/json").

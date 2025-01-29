@@ -44,6 +44,9 @@ func TestGetFilteredTask_Success(t *testing.T) {
 
 	db := app.DB
 
+	token := GetAuthToken(t)
+	assert.NotEmpty(t, token)
+
 	tasks := testTasks()
 
 	for _, task := range tasks {
@@ -61,6 +64,7 @@ func TestGetFilteredTask_Success(t *testing.T) {
 	apitest.
 		Handler(app.Router).
 		Get(url).
+		Header("Authorization", "Bearer "+token).
 		QueryParams(queryParams).
 		Expect(t).
 		Status(http.StatusOK).
@@ -88,6 +92,9 @@ func TestGetFilteredTask_ValidationInvalidStatus(t *testing.T) {
 
 	db := app.DB
 
+	token := GetAuthToken(t)
+	assert.NotEmpty(t, token)
+
 	tasks := testTasks()
 
 	for _, task := range tasks {
@@ -105,6 +112,7 @@ func TestGetFilteredTask_ValidationInvalidStatus(t *testing.T) {
 	apitest.
 		Handler(app.Router).
 		Get(url).
+		Header("Authorization", "Bearer "+token).
 		QueryParams(queryParams).
 		Expect(t).
 		Status(http.StatusBadRequest).
@@ -124,6 +132,9 @@ func TestGetFilteredTask_ValidationInvalidPriority(t *testing.T) {
 
 	db := app.DB
 
+	token := GetAuthToken(t)
+	assert.NotEmpty(t, token)
+
 	tasks := testTasks()
 
 	for _, task := range tasks {
@@ -141,6 +152,7 @@ func TestGetFilteredTask_ValidationInvalidPriority(t *testing.T) {
 	apitest.
 		Handler(app.Router).
 		Get(url).
+		Header("Authorization", "Bearer "+token).
 		QueryParams(queryParams).
 		Expect(t).
 		Status(http.StatusBadRequest).
@@ -159,6 +171,9 @@ func TestGetFilteredTask_DateSuccess(t *testing.T) {
 	defer tests.AppTeardown(app)
 
 	db := app.DB
+
+	token := GetAuthToken(t)
+	assert.NotEmpty(t, token)
 
 	dateStr := "2025-02-28T12:00:00Z"
 	parsedTime, err := time.Parse(time.RFC3339, dateStr)
@@ -188,6 +203,7 @@ func TestGetFilteredTask_DateSuccess(t *testing.T) {
 	apitest.
 		Handler(app.Router).
 		Get(url).
+		Header("Authorization", "Bearer "+token).
 		QueryParams(queryParams).
 		Expect(t).
 		Status(http.StatusOK).

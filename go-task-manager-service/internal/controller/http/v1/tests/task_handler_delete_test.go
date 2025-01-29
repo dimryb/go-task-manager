@@ -17,6 +17,9 @@ func TestDeleteTask_Success(t *testing.T) {
 
 	db := app.DB
 
+	token := GetAuthToken(t)
+	assert.NotEmpty(t, token)
+
 	task := models.Task{
 		Title:       "Task to Delete",
 		Description: "Will be deleted",
@@ -32,6 +35,7 @@ func TestDeleteTask_Success(t *testing.T) {
 	apitest.
 		Handler(app.Router).
 		Delete(url).
+		Header("Authorization", "Bearer "+token).
 		Expect(t).
 		Status(http.StatusOK).
 		Body(`{"ok": true, "result": 1}`).
@@ -42,11 +46,15 @@ func TestDeleteTask_NotFound(t *testing.T) {
 	app := tests.AppSetup(t)
 	defer tests.AppTeardown(app)
 
+	token := GetAuthToken(t)
+	assert.NotEmpty(t, token)
+
 	url := "/tasks/9999"
 
 	apitest.
 		Handler(app.Router).
 		Delete(url).
+		Header("Authorization", "Bearer "+token).
 		Expect(t).
 		Status(http.StatusNotFound).
 		Body(`{"ok": false, "error": "task not found"}`).
@@ -57,11 +65,15 @@ func TestDeleteTask_InvalidID(t *testing.T) {
 	app := tests.AppSetup(t)
 	defer tests.AppTeardown(app)
 
+	token := GetAuthToken(t)
+	assert.NotEmpty(t, token)
+
 	url := "/tasks/abc" // Некорректный ID
 
 	apitest.
 		Handler(app.Router).
 		Delete(url).
+		Header("Authorization", "Bearer "+token).
 		Expect(t).
 		Status(http.StatusBadRequest).
 		Body(`{"ok": false, "error": "invalid task ID"}`).

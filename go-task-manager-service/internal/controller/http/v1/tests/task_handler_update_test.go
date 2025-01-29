@@ -17,6 +17,9 @@ func TestUpdateTask_Success(t *testing.T) {
 
 	db := app.DB
 
+	token := GetAuthToken(t)
+	assert.NotEmpty(t, token)
+
 	task := pgModels.Task{
 		Title:       "Old Title",
 		Description: "Old Description",
@@ -39,6 +42,7 @@ func TestUpdateTask_Success(t *testing.T) {
 	apitest.
 		Handler(app.Router).
 		Put(url).
+		Header("Authorization", "Bearer "+token).
 		JSON(updateRequest).
 		Expect(t).
 		Status(http.StatusOK).
@@ -49,6 +53,9 @@ func TestUpdateTask_NotFound(t *testing.T) {
 	app := tests.AppSetup(t)
 	defer tests.AppTeardown(app)
 
+	token := GetAuthToken(t)
+	assert.NotEmpty(t, token)
+
 	url := "/tasks/9999"
 
 	updateRequest := map[string]interface{}{
@@ -58,6 +65,7 @@ func TestUpdateTask_NotFound(t *testing.T) {
 	apitest.
 		Handler(app.Router).
 		Put(url).
+		Header("Authorization", "Bearer "+token).
 		JSON(updateRequest).
 		Expect(t).
 		Status(http.StatusNotFound).
@@ -68,6 +76,9 @@ func TestUpdateTask_InvalidID(t *testing.T) {
 	app := tests.AppSetup(t)
 	defer tests.AppTeardown(app)
 
+	token := GetAuthToken(t)
+	assert.NotEmpty(t, token)
+
 	url := "/tasks/abc"
 
 	updateRequest := map[string]interface{}{
@@ -77,6 +88,7 @@ func TestUpdateTask_InvalidID(t *testing.T) {
 	apitest.
 		Handler(app.Router).
 		Put(url).
+		Header("Authorization", "Bearer "+token).
 		JSON(updateRequest).
 		Expect(t).
 		Status(http.StatusBadRequest).
@@ -86,6 +98,9 @@ func TestUpdateTask_InvalidID(t *testing.T) {
 func TestUpdateTask_InvalidData(t *testing.T) {
 	app := tests.AppSetup(t)
 	defer tests.AppTeardown(app)
+
+	token := GetAuthToken(t)
+	assert.NotEmpty(t, token)
 
 	db := app.DB
 
@@ -108,6 +123,7 @@ func TestUpdateTask_InvalidData(t *testing.T) {
 	apitest.
 		Handler(app.Router).
 		Put(url).
+		Header("Authorization", "Bearer "+token).
 		JSON(updateRequest).
 		Expect(t).
 		Status(http.StatusBadRequest).
