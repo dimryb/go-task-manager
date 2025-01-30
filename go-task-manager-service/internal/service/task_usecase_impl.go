@@ -2,8 +2,8 @@ package service
 
 import (
 	"errors"
-	"go-task-manager/internal/entity"
-	"go-task-manager/internal/repo/pgdb"
+	"go-task-manager-service/internal/entity"
+	"go-task-manager-service/internal/repo/pgdb"
 )
 
 type taskUseCase struct {

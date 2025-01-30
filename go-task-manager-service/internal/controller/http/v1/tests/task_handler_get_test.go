@@ -5,12 +5,12 @@ import (
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
 	"github.com/stretchr/testify/assert"
-	"go-task-manager/internal/repo/pgdb/models"
+	"go-task-manager-service/internal/repo/pgdb/models"
 	"net/http"
 	"testing"
 	"time"
 
-	"go-task-manager/tests"
+	"go-task-manager-service/tests"
 )
 
 func TestGetTask_Success(t *testing.T) {

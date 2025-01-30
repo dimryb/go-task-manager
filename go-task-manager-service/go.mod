@@ -1,4 +1,4 @@
-module go-task-manager
+module go-task-manager-service
 
 go 1.22.0
 

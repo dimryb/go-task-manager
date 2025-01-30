@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"go-task-manager/internal/entity"
+	"go-task-manager-service/internal/entity"
 )
 
 type MockTaskUseCase struct {

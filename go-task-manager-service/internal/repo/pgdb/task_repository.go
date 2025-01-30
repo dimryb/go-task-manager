@@ -1,7 +1,7 @@
 package pgdb
 
 import (
-	"go-task-manager/internal/entity"
+	"go-task-manager-service/internal/entity"
 )
 
 type TaskRepository interface {

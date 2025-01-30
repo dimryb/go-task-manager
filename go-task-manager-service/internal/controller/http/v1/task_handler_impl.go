@@ -9,10 +9,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"go-task-manager/internal/controller/http/models"
-	"go-task-manager/internal/controller/http/rest"
-	"go-task-manager/internal/entity"
-	"go-task-manager/internal/service"
+	"go-task-manager-service/internal/controller/http/models"
+	"go-task-manager-service/internal/controller/http/rest"
+	"go-task-manager-service/internal/entity"
+	"go-task-manager-service/internal/service"
 )
 
 type taskHandler struct {

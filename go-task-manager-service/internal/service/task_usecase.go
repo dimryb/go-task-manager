@@ -1,7 +1,7 @@
 package service
 
 import (
-	"go-task-manager/internal/entity"
+	"go-task-manager-service/internal/entity"
 )
 
 type TaskUseCase interface {

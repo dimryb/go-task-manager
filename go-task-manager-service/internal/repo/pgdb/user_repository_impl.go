@@ -2,7 +2,7 @@ package pgdb
 
 import (
 	"errors"
-	"go-task-manager/internal/repo/pgdb/models"
+	"go-task-manager-service/internal/repo/pgdb/models"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

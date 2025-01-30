@@ -26,7 +26,7 @@ build/
 *.local
 *.log
 *.tmp
-!*.env.test
+!go-task-manager-service/.env.test
 
 # Visual Studio Code
 .vscode/

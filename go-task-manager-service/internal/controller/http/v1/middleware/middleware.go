@@ -3,7 +3,7 @@ package middleware
 import (
 	"errors"
 	"github.com/golang-jwt/jwt/v5"
-	"go-task-manager/internal/controller/http/rest"
+	"go-task-manager-service/internal/controller/http/rest"
 	"net/http"
 	"strings"
 )

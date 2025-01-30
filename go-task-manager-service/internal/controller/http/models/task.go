@@ -1,8 +1,8 @@
 package models
 
 import (
-	"go-task-manager/internal/entity"
-	"go-task-manager/pkg/utils"
+	"go-task-manager-service/internal/entity"
+	"go-task-manager-service/pkg/utils"
 	"time"
 )
 

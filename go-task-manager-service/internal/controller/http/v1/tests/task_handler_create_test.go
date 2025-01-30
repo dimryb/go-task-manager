@@ -1,9 +1,9 @@
 package tests
 
 import (
-	"go-task-manager/internal/controller/http/models"
-	"go-task-manager/internal/controller/http/v1"
-	"go-task-manager/internal/entity"
+	"go-task-manager-service/internal/controller/http/models"
+	"go-task-manager-service/internal/controller/http/v1"
+	"go-task-manager-service/internal/entity"
 	"net/http"
 	"testing"
 	"time"

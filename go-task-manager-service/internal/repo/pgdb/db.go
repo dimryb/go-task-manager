@@ -3,7 +3,7 @@ package pgdb
 import (
 	"errors"
 	"fmt"
-	"go-task-manager/pkg/utils"
+	"go-task-manager-service/pkg/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"io/ioutil"

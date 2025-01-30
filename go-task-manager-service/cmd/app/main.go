@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-task-manager/internal/app"
+	"go-task-manager-service/internal/app"
 )
 
 // @title           Task Manager Service

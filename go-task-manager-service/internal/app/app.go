@@ -11,10 +11,10 @@ import (
 	"syscall"
 	"time"
 
-	"go-task-manager/config"
-	handler "go-task-manager/internal/controller/http/v1"
-	repository "go-task-manager/internal/repo/pgdb"
-	"go-task-manager/internal/service"
+	"go-task-manager-service/config"
+	handler "go-task-manager-service/internal/controller/http/v1"
+	repository "go-task-manager-service/internal/repo/pgdb"
+	"go-task-manager-service/internal/service"
 
 	log "github.com/sirupsen/logrus"
 )

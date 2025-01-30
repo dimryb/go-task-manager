@@ -3,8 +3,8 @@ package tests
 import (
 	"testing"
 
-	"go-task-manager/internal/app"
-	"go-task-manager/internal/repo/pgdb"
+	"go-task-manager-service/internal/app"
+	"go-task-manager-service/internal/repo/pgdb"
 )
 
 func AppSetup(t *testing.T) *app.App {

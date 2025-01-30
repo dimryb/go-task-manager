@@ -2,8 +2,8 @@ package service
 
 import (
 	"errors"
-	repository "go-task-manager/internal/repo/pgdb"
-	"go-task-manager/internal/repo/pgdb/models"
+	repository "go-task-manager-service/internal/repo/pgdb"
+	"go-task-manager-service/internal/repo/pgdb/models"
 	"golang.org/x/crypto/bcrypt"
 	"time"
 

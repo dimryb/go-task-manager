@@ -1,8 +1,8 @@
 package pgdb
 
 import (
-	"go-task-manager/internal/entity"
-	"go-task-manager/internal/repo/pgdb/models"
+	"go-task-manager-service/internal/entity"
+	"go-task-manager-service/internal/repo/pgdb/models"
 	"gorm.io/gorm"
 	"time"
 )

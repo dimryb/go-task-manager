@@ -3,7 +3,7 @@ package config
 import (
 	"errors"
 	"github.com/joho/godotenv"
-	"go-task-manager/pkg/utils"
+	"go-task-manager-service/pkg/utils"
 	"os"
 	"path/filepath"
 )

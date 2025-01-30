@@ -1,6 +1,6 @@
 package pgdb
 
-import "go-task-manager/internal/repo/pgdb/models"
+import "go-task-manager-service/internal/repo/pgdb/models"
 
 type UserRepository interface {
 	GetUserByUsername(username string) (*models.User, error)

@@ -2,11 +2,11 @@ package v1
 
 import (
 	"github.com/gorilla/mux"
-	"go-task-manager/internal/controller/http/v1/middleware"
+	"go-task-manager-service/internal/controller/http/v1/middleware"
 	"net/http"
 
 	swagger "github.com/swaggo/http-swagger"
-	_ "go-task-manager/docs"
+	_ "go-task-manager-service/docs"
 )
 
 func NewRouter(authHandler AuthHandler, taskHandler TaskHandler) *mux.Router {
