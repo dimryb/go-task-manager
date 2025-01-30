@@ -83,8 +83,16 @@ func Initialize(configName string) *App {
 	return app
 }
 
+func (app *App) initTaskCleanupScheduler() {
+	stop := make(chan struct{})
+
+	service.StartTaskCleanupScheduler(stop)
+}
+
 func Run(configPath string) {
 	app := Initialize(".env")
+
+	app.initTaskCleanupScheduler()
 
 	// HTTP server
 	server := &http.Server{
