@@ -20,6 +20,9 @@ func NewRouter(authHandler AuthHandler, taskHandler TaskHandler) *mux.Router {
 	protected := r.NewRoute().Subrouter()
 	protected.Use(middleware.JWTMiddleware)
 
+	protected.HandleFunc("/tasks/export", taskHandler.ExportTasks).Methods(http.MethodGet)
+	protected.HandleFunc("/tasks/import", taskHandler.ImportTasks).Methods(http.MethodPost)
+
 	protected.HandleFunc(`/tasks/{id}`, taskHandler.GetTaskById).Methods(http.MethodGet)
 	protected.HandleFunc(`/tasks`, taskHandler.CreateTask).Methods(http.MethodPost)
 	protected.HandleFunc(`/tasks`, taskHandler.GetTasksFiltered).Methods(http.MethodGet)

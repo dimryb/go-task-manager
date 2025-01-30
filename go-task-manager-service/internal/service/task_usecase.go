@@ -10,4 +10,6 @@ type TaskUseCase interface {
 	GetTaskByID(id uint) (entity.Task, error)
 	UpdateTask(task entity.Task) error
 	DeleteTask(id uint) error
+	GetAllTasks() ([]entity.Task, error)
+	CreateTasks(tasks []entity.Task) error
 }

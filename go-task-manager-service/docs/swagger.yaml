@@ -335,6 +335,58 @@ paths:
       summary: Обновление задачи
       tags:
       - tasks
+  /tasks/export:
+    get:
+      consumes:
+      - application/json
+      description: Экспортирует все задачи в JSON-файл (требуется авторизация)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/rest.Response'
+      security:
+      - JWT: []
+      summary: экспорт всех задач в json
+      tags:
+      - import export
+  /tasks/import:
+    post:
+      consumes:
+      - application/json
+      description: Импортирует задачи из JSON-файла (требуется авторизация)
+      parameters:
+      - description: Файл JSON с задачами
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "400":
+          description: Некорректные данные
+          schema:
+            $ref: '#/definitions/rest.Response'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/rest.Response'
+      security:
+      - JWT: []
+      summary: Импорт задач из JSON
+      tags:
+      - import export
 securityDefinitions:
   JWT:
     description: JWT token

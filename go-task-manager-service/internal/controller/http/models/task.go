@@ -2,6 +2,7 @@ package models
 
 import (
 	"go-task-manager/internal/entity"
+	"go-task-manager/pkg/utils"
 	"time"
 )
 
@@ -32,6 +33,17 @@ type TaskResponse struct {
 	UpdatedAt   string `json:"updated_at"`
 }
 
+type CreateTaskImportRequest struct {
+	ID          uint   `json:"id" binding:"required" example:"1"`
+	Title       string `json:"title" binding:"required" example:"Title"`
+	Description string `json:"description" example:"Description"`
+	Status      string `json:"status" binding:"required,oneof=pending in_progress done" example:"pending"`
+	Priority    string `json:"priority" binding:"required,oneof=low medium high" example:"medium"`
+	DueDate     utils.JSONTime
+	CreatedAt   utils.JSONTime
+	UpdatedAt   utils.JSONTime
+}
+
 func NewTaskResponse(task entity.Task) TaskResponse {
 	return TaskResponse{
 		ID:          task.ID,
@@ -46,9 +58,30 @@ func NewTaskResponse(task entity.Task) TaskResponse {
 }
 
 func NewTasksResponse(tasks []entity.Task) []TaskResponse {
-	taskResponses := make([]TaskResponse, len(tasks))
+	tasksResponses := make([]TaskResponse, len(tasks))
 	for i, task := range tasks {
-		taskResponses[i] = NewTaskResponse(task)
+		tasksResponses[i] = NewTaskResponse(task)
 	}
-	return taskResponses
+	return tasksResponses
+}
+
+func NewTaskEntity(task CreateTaskImportRequest) entity.Task {
+	return entity.Task{
+		ID:          task.ID,
+		Title:       task.Title,
+		Description: task.Description,
+		Status:      task.Status,
+		Priority:    task.Priority,
+		DueDate:     task.DueDate.Time(),
+		CreatedAt:   task.CreatedAt.Time(),
+		UpdatedAt:   task.UpdatedAt.Time(),
+	}
+}
+
+func NewTasksEntity(tasks []CreateTaskImportRequest) []entity.Task {
+	tasksEntity := make([]entity.Task, len(tasks))
+	for i, task := range tasks {
+		tasksEntity[i] = NewTaskEntity(task)
+	}
+	return tasksEntity
 }

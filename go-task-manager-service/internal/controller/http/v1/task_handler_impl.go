@@ -3,6 +3,7 @@ package v1
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/gorilla/mux"
 	"gorm.io/gorm"
 	"net/http"
@@ -286,5 +287,67 @@ func (h taskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	rest.WriteJSON(w, http.StatusOK, rest.Response{
 		Ok:     true,
 		Result: id,
+	})
+}
+
+// ExportTasks godoc
+// @Summary экспорт всех задач в json
+// @Description Экспортирует все задачи в JSON-файл (требуется авторизация)
+// @Tags import export
+// @Accept json
+// @Produce json
+// @Success 200 {object} rest.Response
+// @Failure 500 {object} rest.Response "Ошибка сервера"
+// @Security JWT
+// @Router /tasks/export [get]
+func (h taskHandler) ExportTasks(w http.ResponseWriter, r *http.Request) {
+	tasks, err := h.TaskUseCase.GetAllTasks()
+	if err != nil {
+		rest.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	w.Header().Set("Content-Disposition", "attachment; filename=tasks.json")
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(tasks)
+	if err != nil {
+		rest.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+}
+
+// ImportTasks godoc
+// @Summary Импорт задач из JSON
+// @Description Импортирует задачи из JSON-файла (требуется авторизация)
+// @Tags import export
+// @Accept json
+// @Produce json
+// @Param file formData file true "Файл JSON с задачами"
+// @Success 201 {object} rest.Response
+// @Failure 400 {object} rest.Response "Некорректные данные"
+// @Failure 500 {object} rest.Response "Ошибка сервера"
+// @Security JWT
+// @Router /tasks/import [post]
+func (h taskHandler) ImportTasks(w http.ResponseWriter, r *http.Request) {
+	file, _, err := r.FormFile("file")
+	if err != nil {
+		rest.WriteError(w, http.StatusBadRequest, fmt.Errorf("ошибка загрузки файла: %v", err))
+		return
+	}
+	defer file.Close()
+
+	var tasks []models.CreateTaskImportRequest
+	if err := json.NewDecoder(file).Decode(&tasks); err != nil {
+		rest.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+	if err := h.TaskUseCase.CreateTasks(models.NewTasksEntity(tasks)); err != nil {
+		rest.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	rest.WriteJSON(w, http.StatusCreated, rest.Response{
+		Ok:     true,
+		Result: "Tasks imported successfully",
 	})
 }

@@ -45,3 +45,20 @@ func (u *taskUseCase) UpdateTask(task entity.Task) error {
 func (u *taskUseCase) DeleteTask(id uint) error {
 	return u.TaskRepo.Delete(id)
 }
+
+func (u *taskUseCase) GetAllTasks() ([]entity.Task, error) {
+	tasks, err := u.TaskRepo.GetFiltered("", "", "", "")
+	if err != nil {
+		return nil, errors.New("failed to get all tasks: " + err.Error())
+	}
+	return tasks, nil
+}
+
+func (u *taskUseCase) CreateTasks(tasks []entity.Task) error {
+	for _, task := range tasks {
+		if err := u.CreateTask(&task); err != nil {
+			return errors.New("failed to create tasks: " + err.Error())
+		}
+	}
+	return nil
+}
