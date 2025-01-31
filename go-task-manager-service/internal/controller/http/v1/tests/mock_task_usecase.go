@@ -10,6 +10,8 @@ type MockTaskUseCase struct {
 	GetTaskByIDFn      func(id uint) (entity.Task, error)
 	UpdateTaskFn       func(task entity.Task) error
 	DeleteTaskFn       func(id uint) error
+	GetAllTasksFn      func() ([]entity.Task, error)
+	CreateTasksFn      func(tasks []entity.Task) error
 }
 
 func (m *MockTaskUseCase) CreateTask(task *entity.Task) error {
@@ -43,6 +45,20 @@ func (m *MockTaskUseCase) UpdateTask(task entity.Task) error {
 func (m *MockTaskUseCase) DeleteTask(id uint) error {
 	if m.DeleteTaskFn != nil {
 		return m.DeleteTaskFn(id)
+	}
+	return nil
+}
+
+func (m *MockTaskUseCase) GetAllTasks() ([]entity.Task, error) {
+	if m.GetAllTasksFn != nil {
+		return m.GetAllTasksFn()
+	}
+	return nil, nil
+}
+
+func (m *MockTaskUseCase) CreateTasks(tasks []entity.Task) error {
+	if m.CreateTasksFn != nil {
+		return m.CreateTasksFn(tasks)
 	}
 	return nil
 }
