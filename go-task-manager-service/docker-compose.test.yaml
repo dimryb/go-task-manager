@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+
+  postgres_test:
+    container_name: postgres_test
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: go_task_manager_test
+    volumes:
+      - pg-data-test:/var/lib/postgresql/data
+    env_file:
+      - .env.test
+    ports:
+      - "5434:5432"
+    restart: unless-stopped
+
+  tests:
+    container_name: tests
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    volumes:
+      - ./logs:/logs
+      - ./secrets:/secrets
+    env_file:
+      - .env.test
+    depends_on:
+      - postgres_test
+    restart: on-failure
+    command: [ "go", "test", "./..." ]
+
+volumes:
+  pg-data-test:
